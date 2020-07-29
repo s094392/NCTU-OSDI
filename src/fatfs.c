@@ -1,8 +1,8 @@
 #include "fatfs.h"
-
 #include "io.h"
 #include "pool.h"
 #include "sdhost.h"
+#include "utils.h"
 #include "vfs.h"
 
 int fat_base;
@@ -27,7 +27,6 @@ int fatfs_mount(struct filesystem* fs, struct mount* mount) {
     struct mbr* mbr = kmalloc(sizeof(char) * 512);
     readblock(0, (char*)mbr);
     fat_base = mbr->entry[0].addr;
-    asm volatile("mbr:");
     struct fat_BS* fat_boot = kmalloc(sizeof(struct fat_BS));
     readblock(fat_base, (char*)fat_boot);
 
@@ -58,17 +57,17 @@ int fatfs_mount(struct filesystem* fs, struct mount* mount) {
     fatentry->cluster_id = root_sector;
 
     init_fatentry(fatentry, vnode, "/");
-    asm volatile("jj:");
     for (int i = 0; i < DIR_MAX; i++) {
         fatentry->list[i] = (struct fatentry*)kmalloc(sizeof(struct fatentry));
         fatentry->list[i]->parent = fatentry;
         if ((fat_root + i)->filename[0]) {
-            strncpy(fatentry->list[i]->name, (fat_root + i)->filename, 8);
+            strncpy(fatentry->list[i]->name,
+                    (const char*)(fat_root + i)->filename, 8);
             size_t len = strlen(fatentry->list[i]->name);
             fatentry->list[i]->name_len = len;
             *(fatentry->list[i]->name + len) = '.';
             strncpy(fatentry->list[i]->name + len + 1,
-                    (fat_root + i)->extension, 3);
+                    (const char*)(fat_root + i)->extension, 3);
 
             fatentry->list[i]->cluster_id =
                 ((fat_root + i)->cluster_h << 2) + (fat_root + i)->cluster_l;
@@ -86,6 +85,7 @@ int fatfs_mount(struct filesystem* fs, struct mount* mount) {
         }
     }
     mount->root = vnode;
+    return 0;
 }
 
 int fatfs_lookup(struct vnode* dir_node, struct vnode** target,
@@ -110,7 +110,7 @@ int fatfs_write(struct file* file, const void* buf, size_t len) {
     }
     readblock(root_sector, (char*)fat_root);
     for (int i = 0; i < DIR_MAX; i++) {
-        if (!strncmp((fat_root + i)->filename,
+        if (!strncmp((const char*)(fat_root + i)->filename,
                      ((struct fatentry*)file->vnode->internal)->name,
                      ((struct fatentry*)file->vnode->internal)->name_len)) {
             (fat_root + i)->file_size =

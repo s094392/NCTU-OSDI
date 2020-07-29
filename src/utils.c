@@ -34,8 +34,6 @@ int strncmp(const char *s1, const char *s2, size_t n) {
 
 char *strcpy(char *destination, const char *source) {
     // return if no memory is allocated to the destination
-    if (destination == NULL) return NULL;
-
     // take a pointer pointing to the beginning of destination string
     char *ptr = destination;
 
@@ -56,8 +54,6 @@ char *strcpy(char *destination, const char *source) {
 
 char *strncpy(char *destination, const char *source, size_t len) {
     // return if no memory is allocated to the destination
-    if (destination == NULL) return NULL;
-
     // take a pointer pointing to the beginning of destination string
     char *ptr = destination;
 
