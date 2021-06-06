@@ -1,20 +1,22 @@
-# My OSDI 2020
+# Operation System Design and Implementation Course 2020
 
-## Author
+This repository is my homework submission
 
-| 學號 | GitHub 帳號 | 姓名 | Email |
-| --- | ----------- | --- | --- |
-|`0616074`| `s094392` | `李睦樂` | s094392@gmail.com |
+## Labs
+* Lab 0 : Environment Setup
+* Lab 1 : Hello World
+* Lab 2 : Bootloader
+* Lab 3 : Exception and Interrupt
+* Lab 4 : Multitasking
+* Lab 5 : Virtual memory
+* Lab 6 : Allocator
+* Lab 7 : Virtual File System
+* Lab 8 : File System Meets Hardware
 
 ## How to run
 ```bash
 make run
 ```
 
-## Run with script
-```bash
-make tty
-sudo screen <tty> 115200
-sudo python script.py input.txt <tty>
-```
-
+# References
+1. [https://grasslab.github.io/osdi/en/index.html](https://grasslab.github.io/osdi/en/index.html)
